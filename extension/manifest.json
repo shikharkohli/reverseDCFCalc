@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Reverse DCF for Screener.in",
+  "version": "0.1.0",
+  "description": "Adds a reverse DCF analysis section to Indian company pages on Screener.in — no downloads required.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.screener.in/company/*",
+        "https://screener.in/company/*"
+      ],
+      "js": [
+        "reverseDCF.js",
+        "scraper.js",
+        "content.js"
+      ],
+      "css": [
+        "injected.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
