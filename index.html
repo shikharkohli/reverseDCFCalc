@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reverse DCF Calculator — Indian Stocks</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- SheetJS for .xlsx parsing -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <h1>Reverse DCF</h1>
+        <span class="brand-sub">Indian listed companies · Screener.in format</span>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light/dark mode">
+        <span class="theme-icon theme-icon-light">☀</span>
+        <span class="theme-icon theme-icon-dark">☾</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. Upload panel -->
+    <section class="panel" id="upload-panel">
+      <h2>1. Upload Screener.in Excel</h2>
+      <p class="muted">
+        Export any Indian listed company from
+        <a href="https://www.screener.in" target="_blank" rel="noopener">Screener.in</a>
+        using the "Export to Excel" button and drop the <code>.xlsx</code> file below.
+      </p>
+
+      <label class="dropzone" id="dropzone" for="file-input">
+        <input type="file" id="file-input" accept=".xlsx,.xls" hidden />
+        <div class="dropzone-inner">
+          <div class="dropzone-icon">↥</div>
+          <div class="dropzone-text">
+            <strong>Click to choose a file</strong> or drag and drop here
+          </div>
+          <div class="dropzone-hint">.xlsx exported from Screener.in</div>
+        </div>
+      </label>
+
+      <div id="upload-error" class="error hidden"></div>
+
+      <div id="company-summary" class="company-summary hidden">
+        <div class="summary-row">
+          <div class="summary-item">
+            <span class="summary-label">Company</span>
+            <span class="summary-value" id="sum-name">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Current Price</span>
+            <span class="summary-value" id="sum-price">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Market Cap (₹ cr)</span>
+            <span class="summary-value" id="sum-mcap">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Base FCF (₹ cr)</span>
+            <span class="summary-value" id="sum-fcf">—</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Parameters -->
+    <section class="panel" id="params-panel">
+      <h2>2. Parameters</h2>
+      <div class="params-grid">
+        <label class="field">
+          <span class="field-label">Discount rate (r)</span>
+          <div class="input-with-suffix">
+            <input type="number" id="param-r" value="12" min="1" max="30" step="0.5" />
+            <span class="suffix">%</span>
+          </div>
+          <span class="field-hint">Cost of equity. Large caps 10–12%, small caps 14%+.</span>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Projection horizon (N)</span>
+          <div class="input-with-suffix">
+            <input type="number" id="param-n" value="10" min="3" max="25" step="1" />
+            <span class="suffix">yrs</span>
+          </div>
+          <span class="field-hint">Number of years of explicit high-growth forecasting.</span>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Terminal growth (g<sub>T</sub>)</span>
+          <div class="input-with-suffix">
+            <input type="number" id="param-gt" value="4" min="0" max="8" step="0.25" />
+            <span class="suffix">%</span>
+          </div>
+          <span class="field-hint">Perpetual growth after year N. Keep below long-run nominal GDP.</span>
+        </label>
+      </div>
+      <div id="params-error" class="error hidden"></div>
+    </section>
+
+    <!-- 3. Results -->
+    <section class="panel" id="results-panel">
+      <h2>3. Results</h2>
+      <div id="results-empty" class="muted">Upload a file and set parameters to see results.</div>
+
+      <div id="results-content" class="hidden">
+        <div class="headline">
+          <div class="headline-main">
+            <span class="headline-label">Implied FCF growth baked into the price</span>
+            <span class="headline-value" id="headline-g">—</span>
+          </div>
+          <div class="headline-verdict">
+            <span class="verdict-label">Verdict</span>
+            <span class="verdict-badge" id="verdict-badge">—</span>
+          </div>
+        </div>
+
+        <p class="verdict-explainer" id="verdict-explainer"></p>
+
+        <h3 class="subhead">Sensitivity grid — implied growth (%)</h3>
+        <p class="muted small">
+          Rows = projection horizon (N). Columns = terminal growth (g<sub>T</sub>).
+          All scenarios use the discount rate set above.
+        </p>
+        <div class="grid-wrapper">
+          <table class="scenario-grid" id="scenario-grid"></table>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="chip chip-investible"></span> Investible (&lt;8%)</span>
+          <span class="legend-item"><span class="chip chip-fair"></span> Fair (8–13%)</span>
+          <span class="legend-item"><span class="chip chip-expensive"></span> Expensive (13–18%)</span>
+          <span class="legend-item"><span class="chip chip-overvalued"></span> Overvalued (≥18%)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Assumptions -->
+    <section class="panel" id="assumptions-panel">
+      <h2>4. Assumptions used in this model</h2>
+      <p class="muted">
+        Every reverse DCF bakes in modelling choices. These are ours — read them before trusting the output.
+      </p>
+      <ul class="assumptions-list">
+        <li>
+          <strong>Base FCF</strong> = average of the last 3 annual columns of
+          <em>Cash from Operating Activity − |Cash from Investing Activity|</em>.
+          We use investing cash flow as a capex proxy, which also captures
+          acquisitions and strategic investments — not just maintenance capex.
+        </li>
+        <li>
+          <strong>Discount rate (r)</strong> is user-set (default 12%) as a proxy for
+          Indian equity cost of capital. There is no single "right" value —
+          adjust it for risk.
+        </li>
+        <li>
+          <strong>Constant growth</strong> is assumed during the explicit
+          projection period. Real businesses grow in fits and starts.
+        </li>
+        <li>
+          <strong>Terminal value</strong> uses the Gordon Growth Model applied
+          at year N. This single number often drives &gt;60% of intrinsic value.
+        </li>
+        <li>
+          <strong>Equity DCF</strong> — we compare the present value of FCFs
+          directly to market capitalisation. This implicitly assumes capital
+          structure (debt/equity mix) stays roughly constant.
+        </li>
+        <li>
+          <strong>No dilution or buybacks</strong> during the projection
+          window. Share count is taken from the META block as reported.
+        </li>
+        <li>
+          <strong>Tax rate</strong> is whatever the reported P&amp;L implies —
+          no normalisation for tax holidays or one-offs.
+        </li>
+        <li>
+          <strong>All figures in ₹ crore</strong> as reported by Screener.in.
+          Consolidated vs standalone depends on the export chosen.
+        </li>
+        <li>
+          <strong>Investibility bands</strong> are GDP-anchored heuristics:
+          &lt;8% Investible, 8–13% Fair, 13–18% Expensive, ≥18% Overvalued.
+          They are not investment advice.
+        </li>
+      </ul>
+    </section>
+
+    <!-- 5. Limitations -->
+    <section class="panel panel-warn" id="limitations-panel">
+      <h2>5. Limitations of DCF analysis</h2>
+      <ol class="limitations-list">
+        <li>
+          <strong>Garbage in, garbage out.</strong> Historical CFO can be
+          distorted by working-capital swings, one-offs, or aggressive
+          accounting. If the inputs are noisy, the output is meaningless.
+        </li>
+        <li>
+          <strong>Terminal value dominates.</strong> Typically more than 60% of
+          intrinsic value sits in the Gordon terminal. Small changes in
+          <em>r</em> or <em>g<sub>T</sub></em> swing the answer dramatically.
+        </li>
+        <li>
+          <strong>Constant-growth fiction.</strong> Real companies face
+          S-curves, disruption, cyclicality and competitive decay. Linear
+          compounding is a convenient lie.
+        </li>
+        <li>
+          <strong>Discount rate is arbitrary.</strong> There is no "correct"
+          cost of capital; different analysts can justify 10% or 14% for the
+          same business.
+        </li>
+        <li>
+          <strong>Not suitable for</strong> banks, NBFCs and insurers (cash
+          flow is not the value driver), early-stage or loss-making companies,
+          and deep cyclicals observed at trough or peak earnings.
+        </li>
+        <li>
+          <strong>Ignores optionality.</strong> New business lines, M&amp;A
+          potential, capital-allocation skill and moat evolution are not
+          captured.
+        </li>
+        <li>
+          <strong>Break-even, not a buy signal.</strong> "Implied growth" tells
+          you what the market expects — it does not build in any margin of
+          safety.
+        </li>
+        <li>
+          <strong>Point-in-time.</strong> The model reflects the latest
+          reported financials. Forward guidance, management commentary or
+          post-reporting-date events are not in it.
+        </li>
+        <li>
+          <strong>Screener data caveats.</strong> Consolidated vs standalone
+          mismatches, restated numbers, missing segments and rounding all
+          affect the output.
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="muted small">
+      Educational tool · Not investment advice · Do your own research.
+    </p>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/excelParser.js"></script>
+  <script src="js/reverseDCF.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

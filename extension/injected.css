@@ -1,0 +1,351 @@
+/* ============================================================
+   injected.css — Styles for the Reverse DCF section injected
+   into Screener.in pages. All class names are `rdcf-` prefixed
+   to avoid clashes. Reuses the brand palette from the standalone
+   site. Respects screener.in's own light/dark (via prefers-color-scheme).
+   ============================================================ */
+
+#rdcf-section {
+  /* Light-mode tokens (defaults). */
+  --rdcf-bg: #ffffff;
+  --rdcf-bg-subtle: #eef0f6;
+  --rdcf-border: #dfe3ed;
+  --rdcf-border-strong: #c4cad7;
+  --rdcf-text: #161a26;
+  --rdcf-text-muted: #5c6273;
+  --rdcf-accent: #2f6bff;
+  --rdcf-accent-soft: #e6edff;
+
+  --rdcf-error-bg: #fdecec;
+  --rdcf-error-border: #e8a5a5;
+  --rdcf-error-text: #9b1c1c;
+
+  --rdcf-investible: #2ca87a;
+  --rdcf-fair: #3b82f6;
+  --rdcf-expensive: #eab308;
+  --rdcf-overvalued: #dc2626;
+
+  --rdcf-cell-investible: #d6f1e4;
+  --rdcf-cell-fair: #dbe8ff;
+  --rdcf-cell-expensive: #fbf0c6;
+  --rdcf-cell-overvalued: #fad9d9;
+
+  --rdcf-radius: 10px;
+  --rdcf-radius-sm: 6px;
+
+  /* Container. .card from screener already provides padding; we
+     nudge typography and add a brand accent. */
+  color: var(--rdcf-text);
+  margin-top: 16px;
+  border-top: 3px solid var(--rdcf-accent);
+  scroll-margin-top: 64px;
+}
+
+@media (prefers-color-scheme: dark) {
+  #rdcf-section {
+    --rdcf-bg: #161a26;
+    --rdcf-bg-subtle: #1c2230;
+    --rdcf-border: #262c3d;
+    --rdcf-border-strong: #3a4258;
+    --rdcf-text: #ecedf3;
+    --rdcf-text-muted: #a0a7b9;
+    --rdcf-accent: #6690ff;
+    --rdcf-accent-soft: #1d2845;
+
+    --rdcf-error-bg: #3a1b1b;
+    --rdcf-error-border: #7a3030;
+    --rdcf-error-text: #f7b6b6;
+
+    --rdcf-investible: #4ac28f;
+    --rdcf-fair: #6690ff;
+    --rdcf-expensive: #f1c13b;
+    --rdcf-overvalued: #ef4444;
+
+    --rdcf-cell-investible: #1a3b2c;
+    --rdcf-cell-fair: #1e2c52;
+    --rdcf-cell-expensive: #3b3216;
+    --rdcf-cell-overvalued: #3f1c1c;
+  }
+}
+
+/* ---------- Header ---------- */
+#rdcf-section .rdcf-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#rdcf-section .rdcf-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--rdcf-text);
+}
+#rdcf-section .rdcf-sub {
+  color: var(--rdcf-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+#rdcf-section .rdcf-small { font-size: 0.82rem; }
+
+#rdcf-section .rdcf-hidden { display: none !important; }
+
+/* ---------- Top row: summary + params ---------- */
+#rdcf-section .rdcf-grid-top {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(260px, 1fr);
+  gap: 18px;
+  margin-top: 12px;
+}
+@media (max-width: 800px) {
+  #rdcf-section .rdcf-grid-top { grid-template-columns: 1fr; }
+}
+
+#rdcf-section .rdcf-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--rdcf-bg-subtle);
+  border: 1px solid var(--rdcf-border);
+  border-radius: var(--rdcf-radius);
+}
+#rdcf-section .rdcf-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+#rdcf-section .rdcf-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--rdcf-text-muted);
+}
+#rdcf-section .rdcf-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--rdcf-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Parameter inputs ---------- */
+#rdcf-section .rdcf-params {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--rdcf-bg-subtle);
+  border: 1px solid var(--rdcf-border);
+  border-radius: var(--rdcf-radius);
+}
+#rdcf-section .rdcf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#rdcf-section .rdcf-field-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--rdcf-text-muted);
+}
+#rdcf-section .rdcf-input {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--rdcf-border-strong);
+  border-radius: var(--rdcf-radius-sm);
+  background: var(--rdcf-bg);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+#rdcf-section .rdcf-input:focus-within { border-color: var(--rdcf-accent); }
+#rdcf-section .rdcf-input input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--rdcf-text);
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  outline: none;
+}
+#rdcf-section .rdcf-input span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--rdcf-bg-subtle);
+  color: var(--rdcf-text-muted);
+  border-left: 1px solid var(--rdcf-border);
+  font-size: 0.85rem;
+}
+
+/* ---------- Headline result ---------- */
+#rdcf-section .rdcf-results { margin-top: 18px; }
+
+#rdcf-section .rdcf-headline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: var(--rdcf-bg-subtle);
+  border: 1px solid var(--rdcf-border);
+  border-radius: var(--rdcf-radius);
+}
+#rdcf-section .rdcf-headline-main,
+#rdcf-section .rdcf-headline-verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#rdcf-section .rdcf-headline-verdict { align-items: flex-end; }
+#rdcf-section .rdcf-headline-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--rdcf-text);
+  letter-spacing: -0.01em;
+}
+#rdcf-section .rdcf-verdict {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  border: 1px solid var(--rdcf-border);
+  background: var(--rdcf-bg);
+}
+#rdcf-section .rdcf-verdict.rdcf-investible {
+  background: var(--rdcf-cell-investible);
+  border-color: var(--rdcf-investible);
+  color: var(--rdcf-investible);
+}
+#rdcf-section .rdcf-verdict.rdcf-fair {
+  background: var(--rdcf-cell-fair);
+  border-color: var(--rdcf-fair);
+  color: var(--rdcf-fair);
+}
+#rdcf-section .rdcf-verdict.rdcf-expensive {
+  background: var(--rdcf-cell-expensive);
+  border-color: var(--rdcf-expensive);
+  color: var(--rdcf-expensive);
+}
+#rdcf-section .rdcf-verdict.rdcf-overvalued {
+  background: var(--rdcf-cell-overvalued);
+  border-color: var(--rdcf-overvalued);
+  color: var(--rdcf-overvalued);
+}
+
+#rdcf-section .rdcf-explainer {
+  margin: 12px 0 0;
+  color: var(--rdcf-text-muted);
+  font-size: 0.92rem;
+}
+
+/* ---------- Scenario grid ---------- */
+#rdcf-section .rdcf-subhead {
+  font-size: 1rem;
+  margin: 22px 0 2px;
+  color: var(--rdcf-text);
+}
+#rdcf-section .rdcf-grid-wrap { overflow-x: auto; margin-top: 10px; }
+#rdcf-section .rdcf-scenario {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 420px;
+  font-size: 0.92rem;
+}
+#rdcf-section .rdcf-scenario th,
+#rdcf-section .rdcf-scenario td {
+  border: 1px solid var(--rdcf-border);
+  padding: 9px 12px;
+  text-align: center;
+  color: var(--rdcf-text);
+}
+#rdcf-section .rdcf-scenario thead th {
+  background: var(--rdcf-bg-subtle);
+  color: var(--rdcf-text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+#rdcf-section .rdcf-scenario tbody th {
+  background: var(--rdcf-bg-subtle);
+  color: var(--rdcf-text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+#rdcf-section .rdcf-scenario td {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+#rdcf-section .rdcf-scenario td.rdcf-investible { background: var(--rdcf-cell-investible); color: var(--rdcf-investible); }
+#rdcf-section .rdcf-scenario td.rdcf-fair       { background: var(--rdcf-cell-fair);       color: var(--rdcf-fair); }
+#rdcf-section .rdcf-scenario td.rdcf-expensive  { background: var(--rdcf-cell-expensive);  color: var(--rdcf-expensive); }
+#rdcf-section .rdcf-scenario td.rdcf-overvalued { background: var(--rdcf-cell-overvalued); color: var(--rdcf-overvalued); }
+#rdcf-section .rdcf-scenario td.rdcf-err        { color: var(--rdcf-error-text); font-weight: 500; }
+
+/* ---------- Legend ---------- */
+#rdcf-section .rdcf-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.84rem;
+  color: var(--rdcf-text-muted);
+}
+#rdcf-section .rdcf-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+#rdcf-section .rdcf-chip {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+#rdcf-section .rdcf-chip.rdcf-investible { background: var(--rdcf-investible); }
+#rdcf-section .rdcf-chip.rdcf-fair       { background: var(--rdcf-fair); }
+#rdcf-section .rdcf-chip.rdcf-expensive  { background: var(--rdcf-expensive); }
+#rdcf-section .rdcf-chip.rdcf-overvalued { background: var(--rdcf-overvalued); }
+
+/* ---------- Errors ---------- */
+#rdcf-section .rdcf-error {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--rdcf-radius-sm);
+  background: var(--rdcf-error-bg);
+  border: 1px solid var(--rdcf-error-border);
+  color: var(--rdcf-error-text);
+  font-size: 0.9rem;
+}
+
+/* ---------- Details / assumptions / limitations ---------- */
+#rdcf-section .rdcf-details {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: var(--rdcf-bg-subtle);
+  border: 1px solid var(--rdcf-border);
+  border-radius: var(--rdcf-radius);
+}
+#rdcf-section .rdcf-details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--rdcf-text);
+  list-style: revert;
+}
+#rdcf-section .rdcf-details ul,
+#rdcf-section .rdcf-details ol {
+  margin: 10px 0 4px;
+  padding-left: 1.2em;
+  color: var(--rdcf-text);
+  line-height: 1.55;
+}
+#rdcf-section .rdcf-details li { margin-bottom: 6px; }
+#rdcf-section .rdcf-details.rdcf-warn {
+  background: var(--rdcf-cell-expensive);
+  border-color: var(--rdcf-expensive);
+  color: var(--rdcf-text);
+}
+#rdcf-section .rdcf-details.rdcf-warn > summary { color: var(--rdcf-text); }
