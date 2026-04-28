@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Reverse DCF for Screener.in",
-  "version": "0.1.0",
-  "description": "Adds a reverse DCF analysis section to Indian company pages on Screener.in — no downloads required.",
+  "name": "Reverse DCF for Indian Stocks",
+  "version": "0.2.0",
+  "description": "Adds a reverse DCF analysis section to company pages on Screener.in and Tijori Finance — no downloads required.",
   "content_scripts": [
     {
       "matches": [
@@ -12,6 +12,21 @@
       "js": [
         "reverseDCF.js",
         "scraper.js",
+        "content.js"
+      ],
+      "css": [
+        "injected.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.tijorifinance.com/company/*",
+        "https://tijorifinance.com/company/*"
+      ],
+      "js": [
+        "reverseDCF.js",
+        "scraperTijori.js",
         "content.js"
       ],
       "css": [

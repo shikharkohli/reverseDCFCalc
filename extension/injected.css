@@ -42,6 +42,7 @@
   font-size: 14px;
   line-height: 1.55;
   margin-top: 16px;
+  padding: 16px 20px;
   border-top: 3px solid var(--rdcf-accent);
   scroll-margin-top: 64px;
 }

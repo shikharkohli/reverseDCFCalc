@@ -277,21 +277,58 @@
   }
 
   // -----------------------------------------------------------
+  // Site detection
+  // -----------------------------------------------------------
+  function isTijori() {
+    return location.hostname.indexOf("tijorifinance.com") !== -1;
+  }
+
+  function canRun() {
+    if (isTijori()) {
+      return !!(
+        document.getElementById("fin_tables_data") ||
+        document.querySelector("table.fin_table")
+      );
+    }
+    return !!(document.getElementById("cash-flow") && document.getElementById("profit-loss"));
+  }
+
+  function scrapeCurrentSite() {
+    if (isTijori() && typeof TijoriScraper !== "undefined") {
+      return TijoriScraper.scrape();
+    }
+    return ScreenerScraper.scrape();
+  }
+
+  function insertSectionForSite(section) {
+    if (isTijori()) {
+      var rdcf = document.getElementById("reverse_dcf");
+      if (rdcf && rdcf.parentNode) {
+        rdcf.parentNode.insertBefore(section, rdcf.nextSibling);
+        return;
+      }
+      var cfSection = document.getElementById("cash_flow");
+      if (cfSection && cfSection.parentNode) {
+        cfSection.parentNode.insertBefore(section, cfSection.nextSibling);
+        return;
+      }
+    }
+    insertSection(section);
+  }
+
+  // -----------------------------------------------------------
   // Entry point
   // -----------------------------------------------------------
   function init() {
     if (document.getElementById(SECTION_ID)) return; // already injected
-    // Only run on company pages that actually have the financial sections.
-    if (!document.getElementById("cash-flow") || !document.getElementById("profit-loss")) {
-      return;
-    }
+    if (!canRun()) return;
 
     var section = buildSection();
-    insertSection(section);
+    insertSectionForSite(section);
     wireInputs();
 
     try {
-      var scraped = ScreenerScraper.scrape();
+      var scraped = scrapeCurrentSite();
       var fcf = ReverseDCF.computeBaseFCF(scraped);
       state.scraped   = scraped;
       state.fcf0      = fcf.value;
