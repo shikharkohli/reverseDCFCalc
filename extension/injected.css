@@ -34,9 +34,15 @@
   --rdcf-radius-sm: 6px;
 
   /* Container. .card from screener already provides padding; we
-     nudge typography and add a brand accent. */
+     nudge typography and add a brand accent.
+     NOTE: screener.in sets `html { font-size: 62.5% }` so 1rem = 10px
+     on their pages. We use absolute px for all font sizes to stay
+     readable regardless of host-page scaling. */
   color: var(--rdcf-text);
+  font-size: 14px;
+  line-height: 1.55;
   margin-top: 16px;
+  padding: 16px 20px;
   border-top: 3px solid var(--rdcf-accent);
   scroll-margin-top: 64px;
 }
@@ -79,15 +85,15 @@
 }
 #rdcf-section .rdcf-header h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 22px;
   color: var(--rdcf-text);
 }
 #rdcf-section .rdcf-sub {
   color: var(--rdcf-text-muted);
-  font-size: 0.9rem;
+  font-size: 14px;
   margin: 0;
 }
-#rdcf-section .rdcf-small { font-size: 0.82rem; }
+#rdcf-section .rdcf-small { font-size: 13px; }
 
 #rdcf-section .rdcf-hidden { display: none !important; }
 
@@ -118,13 +124,13 @@
   min-width: 0;
 }
 #rdcf-section .rdcf-label {
-  font-size: 0.72rem;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--rdcf-text-muted);
 }
 #rdcf-section .rdcf-value {
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   color: var(--rdcf-text);
   overflow: hidden;
@@ -148,7 +154,7 @@
   gap: 4px;
 }
 #rdcf-section .rdcf-field-label {
-  font-size: 0.82rem;
+  font-size: 13px;
   font-weight: 600;
   color: var(--rdcf-text-muted);
 }
@@ -168,18 +174,18 @@
   border: none;
   background: transparent;
   color: var(--rdcf-text);
-  padding: 8px 10px;
-  font-size: 0.95rem;
+  padding: 9px 12px;
+  font-size: 15px;
   outline: none;
 }
 #rdcf-section .rdcf-input span {
   display: inline-flex;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 12px;
   background: var(--rdcf-bg-subtle);
   color: var(--rdcf-text-muted);
   border-left: 1px solid var(--rdcf-border);
-  font-size: 0.85rem;
+  font-size: 13px;
 }
 
 /* ---------- Headline result ---------- */
@@ -204,17 +210,18 @@
 }
 #rdcf-section .rdcf-headline-verdict { align-items: flex-end; }
 #rdcf-section .rdcf-headline-value {
-  font-size: 2rem;
+  font-size: 34px;
   font-weight: 700;
   color: var(--rdcf-text);
   letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 #rdcf-section .rdcf-verdict {
   display: inline-block;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 14px;
   border: 1px solid var(--rdcf-border);
   background: var(--rdcf-bg);
 }
@@ -242,12 +249,13 @@
 #rdcf-section .rdcf-explainer {
   margin: 12px 0 0;
   color: var(--rdcf-text-muted);
-  font-size: 0.92rem;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 /* ---------- Scenario grid ---------- */
 #rdcf-section .rdcf-subhead {
-  font-size: 1rem;
+  font-size: 16px;
   margin: 22px 0 2px;
   color: var(--rdcf-text);
 }
@@ -256,12 +264,12 @@
   border-collapse: collapse;
   width: 100%;
   min-width: 420px;
-  font-size: 0.92rem;
+  font-size: 14px;
 }
 #rdcf-section .rdcf-scenario th,
 #rdcf-section .rdcf-scenario td {
   border: 1px solid var(--rdcf-border);
-  padding: 9px 12px;
+  padding: 10px 14px;
   text-align: center;
   color: var(--rdcf-text);
 }
@@ -269,7 +277,7 @@
   background: var(--rdcf-bg-subtle);
   color: var(--rdcf-text-muted);
   font-weight: 600;
-  font-size: 0.78rem;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -277,7 +285,7 @@
   background: var(--rdcf-bg-subtle);
   color: var(--rdcf-text-muted);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 13px;
 }
 #rdcf-section .rdcf-scenario td {
   font-variant-numeric: tabular-nums;
@@ -295,7 +303,7 @@
   flex-wrap: wrap;
   gap: 16px;
   margin-top: 12px;
-  font-size: 0.84rem;
+  font-size: 13px;
   color: var(--rdcf-text-muted);
 }
 #rdcf-section .rdcf-legend-item { display: inline-flex; align-items: center; gap: 6px; }
@@ -318,7 +326,7 @@
   background: var(--rdcf-error-bg);
   border: 1px solid var(--rdcf-error-border);
   color: var(--rdcf-error-text);
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 /* ---------- Details / assumptions / limitations ---------- */
@@ -332,17 +340,19 @@
 #rdcf-section .rdcf-details > summary {
   cursor: pointer;
   font-weight: 600;
+  font-size: 15px;
   color: var(--rdcf-text);
   list-style: revert;
 }
 #rdcf-section .rdcf-details ul,
 #rdcf-section .rdcf-details ol {
-  margin: 10px 0 4px;
-  padding-left: 1.2em;
+  margin: 12px 0 4px;
+  padding-left: 1.3em;
   color: var(--rdcf-text);
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.6;
 }
-#rdcf-section .rdcf-details li { margin-bottom: 6px; }
+#rdcf-section .rdcf-details li { margin-bottom: 8px; }
 #rdcf-section .rdcf-details.rdcf-warn {
   background: var(--rdcf-cell-expensive);
   border-color: var(--rdcf-expensive);
